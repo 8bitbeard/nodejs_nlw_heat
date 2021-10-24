@@ -1,6 +1,6 @@
 import axios from "axios";
 import prismaClient from "../prisma";
-import { sign } from "jsonwebtoken"
+import { Secret, sign } from "jsonwebtoken"
 
 interface IAccessTokenResponse {
     access_token: string
@@ -29,6 +29,10 @@ class AuthenticateUserService {
             }
         })
 
+        if(!accessTokenResponse.access_token) {
+            throw new Error("The connection to the Github Client Failed!")
+        }
+
         const response = await axios.get<IUserResponse>("https://api.github.com/user", {
             headers: {
                 authorization: `Bearer ${accessTokenResponse.access_token}`
@@ -36,6 +40,10 @@ class AuthenticateUserService {
         })
 
         const { login, id, avatar_url, name } = response.data;
+
+        if(!login || !id || !avatar_url || !name) {
+            throw new Error("Failed to fetch user data from Github!")
+        }
 
         let user = await prismaClient.user.findFirst({
             where: {
@@ -60,7 +68,7 @@ class AuthenticateUserService {
                 avatar_url: user.avatar_url,
                 id: user.id
             }
-        }, process.env.JWT_SECRET,{
+        }, process.env.JWT_SECRET as Secret,{
             subject: user.id,
             expiresIn: "1d"
         })
