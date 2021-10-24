@@ -1,0 +1,170 @@
+swagger: "2.0"
+info:
+  description: "This is the swagger for the `NLW Heat`, an API built on the Next Level Week #07 event. Here you will find all the endpoints created on the course"
+  version: "1.0.0"
+  title: "NLW Heat"
+host: "localhost:4000"
+basePath: "/nlw-heat"
+tags:
+- name: "Authentication"
+  description: "NLW Heat authentication operations"
+- name: "Messages"
+  description: "NLW Heat messages operations."
+- name: "Profile"
+  description: "NLW Heat user operations."
+schemes:
+- "https"
+- "http"
+paths:
+  /v1/authenticate:
+    post:
+      tags:
+      - "Authentication"
+      summary: "Authenticate a user"
+      description: "Authenticate users when providing a github code"
+      operationId: "authenticateUsers"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "User credentials object"
+        required: true
+        schema:
+          $ref: "#/definitions/Authenticate"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/AuthenticateResponse"
+  /v1/message:
+    post:
+      tags:
+      - "Messages"
+      summary: "Create a new message"
+      description: "This can only be done by the logged in user."
+      operationId: "createMessage"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: 'Ex: Bearer **eyJhbGciOiJSUzUxMiIsI...**'
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/MessageRequest"
+      responses:
+        "201":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/MessageResponse"
+  /v1/messages/last3:
+    get:
+      tags:
+      - "Messages"
+      summary: "Get Last 3 Messages"
+      description: "This can be done without any authentication"
+      operationId: "getLast3Messages"
+      produces:
+      - "application/json"
+      responses:
+        "201":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MessageResponse"
+  /v1/profile:
+    get:
+      tags:
+      - "Profile"
+      summary: "Display data from the logged in user"
+      description: "This can only be done by the logged in user."
+      operationId: "displayUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "Authorization"
+        in: "header"
+        description: 'Ex: Bearer **eyJhbGciOiJSUzUxMiIsI...**'
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/UserData"
+definitions:
+  Authenticate:
+    type: "object"
+    properties:
+      code:
+        type: "string"
+        example: "1e3c0f315ab58a2621bf"
+    xml:
+      name: "Authenticate"
+  MessageRequest:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "O DoWhile 2021 vai ser um evento incrível! Mal posso esperar"
+    xml:
+      name: "Message"
+  AuthenticateResponse:
+    type: "object"
+    properties:
+      token: 
+        type: "string"
+        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IndpbHRvbjJAZXhhbXBsZS5jb20iLCJpYXQiOjE2MjYxNzI5MjQsImV4cCI6MTYyNjI1OTMyNCwic3ViIjoiNDUzZWVhODctNzQxNi00MGY0LTllMzctZTA2NGU1ZmVkOTYzIn0.ApvFv5Dz6yPnURYfC7BBAEID2DHf08TG4Yllh49_VuA'
+      user:
+        $ref: "#/definitions/UserData"
+    xml:
+      name: "Authenticate"
+  UserData:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "43fa1eb2-5a20-4231-aa41-1051f160c843"
+      name:
+        type: "string"
+        example: "Wilton Souza"
+      github_id:
+        type: "integer"
+        example: 38054255
+      avatar_url:
+        type: "string"
+        example: "https://avatars.githubusercontent.com/u/38054255?v=4"
+      login:
+        type: "string"
+        example: "8bitbeard"
+    xml:
+      name: "UserData"
+  MessageResponse:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "d426cfc0-8da8-44ab-9a9b-352d4740f47d"
+      text:
+        type: "string"
+        example: "O DoWhile 2021 vai ser um evento incrível! Mal posso esperar"
+      created_at:
+        type: "string"
+        example: "2021-10-21T02:10:55.300Z"
+      user_id:
+        type: "string"
+        example: "43fa1eb2-5a20-4231-aa41-1051f160c843"
+      user:
+          $ref: "#/definitions/UserData"
+    xml:
+      name: "MessageResponse"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
