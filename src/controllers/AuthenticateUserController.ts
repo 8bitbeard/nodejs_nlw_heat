@@ -10,7 +10,7 @@ class AuthenticateUserController {
         const authenticateService = new AuthenticateUserService()
         try {
             const result = await authenticateService.execute(code)
-            return response.json(result);
+            return response.status(201).json(result);
         } catch(err) {
             return response.json({error: err.message});
         }
