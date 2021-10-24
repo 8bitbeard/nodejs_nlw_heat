@@ -1,5 +1,8 @@
 # NodeJS NLW Heat API
-This is a simple API made with NodeJS, developed during the RocketSeat Next Level Week Heat event. The API documentation is hosted on Guthub Pages, and can be accessed on the link: 
+This is a simple API made with NodeJS, developed during the RocketSeat Next Level Week Heat event.
+
+# Documentation
+The API documentation is hosted on Guthub Pages, and can be accessed on the link: https://8bitbeard.github.io/nodejs_nlw_heat/
 
 # Techs Used
 - NodeJS
